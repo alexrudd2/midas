@@ -9,7 +9,10 @@ from typing import Any, Literal, TypeVar, Union, overload
 try:
     from pymodbus.client import AsyncModbusTcpClient  # 3.x
     from pymodbus.pdu import ModbusResponse
-    from pymodbus.register_read_message import ReadHoldingRegistersResponse
+    try:
+        from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
+    except ImportError:  # < 2.7.0
+        from pymodbus.register_read_message import ReadHoldingRegistersResponse  # type: ignore
 except ImportError:  # 2.4.x - 2.5.x
     from pymodbus.client.asynchronous.async_io import (  # type: ignore
         ReconnectingAsyncioModbusTcpClient,
