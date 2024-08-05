@@ -24,7 +24,7 @@ class GasDetector(realGasDetector):
     """Mock interface to the Midas gas detector."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Set an inital mocked state."""
+        """Set an initial mocked state."""
         self.client = AsyncClientMock()
         self.state = {
             "ip": "192.168.0.1",

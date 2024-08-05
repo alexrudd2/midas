@@ -15,7 +15,7 @@ def midas_driver():
 
 @pytest.fixture
 def expected_data():
-    """Return the inital mocked data format."""
+    """Return the initial mocked data format."""
     return {
         "ip": "192.168.0.1",
         "connected": True,
