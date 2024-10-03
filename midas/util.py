@@ -1,10 +1,11 @@
 """Base functionality for modbus communication.
 
 Distributed under the GNU General Public License v2
-Copyright (C) 2022 NuMat Technologies
 """
+from __future__ import annotations
+
 import asyncio
-from typing import Any, Literal, TypeVar, Union, overload
+from typing import Any, Literal, TypeVar, overload
 
 try:
     from pymodbus.client import AsyncModbusTcpClient  # 3.x
@@ -93,7 +94,7 @@ class AsyncioModbusClient:
         """Write a modbus register."""
         await self._request('write_register', address, value, skip_encode=skip_encode)
 
-    async def write_registers(self, address: int, values: Union[list, tuple],
+    async def write_registers(self, address: int, values: list | tuple,
                               skip_encode: bool = False) -> None:
         """Write modbus registers.
 
