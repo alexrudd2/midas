@@ -34,11 +34,11 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "mypy==1.11.2",
+  "mypy~=1.11.2",
   "pytest",
   "pytest-cov",
   "pytest-asyncio",
-  "ruff==0.6.8",
+  "ruff~=0.6.8",
 ]
 
 [project.scripts]
