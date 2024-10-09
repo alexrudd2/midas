@@ -1,9 +1,7 @@
-#!/usr/bin/python
 """
 A Python driver for Honeywell's Midas gas detector, using TCP/IP modbus.
 
 Distributed under the GNU General Public License v2
-Copyright (C) 2019 NuMat Technologies
 """
 import csv
 import os
