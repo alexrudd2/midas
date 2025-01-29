@@ -73,8 +73,7 @@ class AsyncioModbusClient:
         """Read modbus registers.
 
         The Modbus protocol doesn't allow responses longer than 250 bytes
-        (ie. 125 registers), which this function manages by
-        chunking larger requests.
+        (ie. 125 registers), which this function manages by chunking larger requests.
         """
         registers: list = []
         while count > 124:
@@ -89,12 +88,8 @@ class AsyncioModbusClient:
         """Write modbus registers.
 
         The Modbus protocol doesn't allow requests longer than 250 bytes
-        (ie. 125 registers), which this function manages by
-        chunking larger requests.
+        (ie. 125 registers), but a single Midas doesn't have that many.
         """
-        while len(values) > 62:
-            await self._request('write_registers', address=address, values=values)
-            address, values = address + 124, values[62:]
         await self._request('write_registers', address=address, values=values)
 
     @overload
