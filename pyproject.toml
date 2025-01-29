@@ -34,7 +34,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "mypy~=1.13.0",
+  "mypy~=1.14.0",
   "pytest",
   "pytest-cov",
   "pytest-asyncio",
@@ -95,3 +95,4 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = "--cov=midas"
+asyncio_default_fixture_loop_scope = "session"
