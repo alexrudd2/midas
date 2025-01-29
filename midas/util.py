@@ -5,23 +5,27 @@ Distributed under the GNU General Public License v2
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Literal, TypeVar, overload
+from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
 
 try:
     from pymodbus.client import AsyncModbusTcpClient  # 3.x
-    from pymodbus.pdu import ModbusResponse
-    try:
-        from pymodbus.pdu.register_read_message import ReadHoldingRegistersResponse
-    except ImportError:  # < 3.7.0
-        from pymodbus.register_read_message import ReadHoldingRegistersResponse  # type: ignore
 except ImportError:  # 2.4.x - 2.5.x
-    from pymodbus.client.asynchronous.async_io import (  # type: ignore
-        ReconnectingAsyncioModbusTcpClient,
+    from pymodbus.client.asynchronous.async_io import (
+        ReconnectingAsyncioModbusTcpClient,  # type: ignore
     )
-    ReadHoldingRegistersResponse = TypeVar('ReadHoldingRegistersResponse')  # type: ignore
-    ModbusResponse = TypeVar('ModbusResponse')  # type: ignore
+if TYPE_CHECKING:
+    try:  # 3.8.x
+        from pymodbus.pdu.register_message import (
+            ReadHoldingRegistersResponse,
+            WriteMultipleRegistersResponse,
+        )
+    except ImportError:  # <= 3.7.x
+        ReadHoldingRegistersResponse = TypeVar('ReadHoldingRegistersResponse')  # type: ignore
+        WriteMultipleRegistersResponse = TypeVar('WriteMultipleRegistersResponse')  # type: ignore
 
 import pymodbus.exceptions
+
+ModbusResponse = TypeVar('ModbusResponse')  # type: ignore
 
 
 class AsyncioModbusClient:
@@ -99,11 +103,12 @@ class AsyncioModbusClient:
         ...
 
     @overload
-    async def _request(self, method: str,
-                       *args: Any, **kwargs: Any) -> ModbusResponse:
+    async def _request(self, method: Literal['write_registers'],
+                       *args: Any, **kwargs: Any) -> WriteMultipleRegistersResponse:
         ...
 
-    async def _request(self, method: str, *args: Any, **kwargs: Any) -> ModbusResponse:
+    async def _request(self, method: Literal['read_holding_registers' | 'write_registers'],
+                       *args: Any, **kwargs: Any) -> ModbusResponse:
         """Send a request to the device and awaits a response.
 
         This mainly ensures that requests are sent serially, as the Modbus
