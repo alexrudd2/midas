@@ -73,7 +73,7 @@ class AsyncioModbusClient:
         """Read modbus registers.
 
         The Modbus protocol doesn't allow responses longer than 250 bytes
-        (ie. 125 registers, 62 DF addresses), which this function manages by
+        (ie. 125 registers), which this function manages by
         chunking larger requests.
         """
         registers: list = []
@@ -89,7 +89,7 @@ class AsyncioModbusClient:
         """Write modbus registers.
 
         The Modbus protocol doesn't allow requests longer than 250 bytes
-        (ie. 125 registers, 62 DF addresses), which this function manages by
+        (ie. 125 registers), which this function manages by
         chunking larger requests.
         """
         while len(values) > 62:
