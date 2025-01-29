@@ -93,6 +93,10 @@ allow_untyped_defs = false
 module = ["pymodbus.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+allow_untyped_defs = true
+
 [tool.pytest.ini_options]
 addopts = "--cov=midas"
 asyncio_default_fixture_loop_scope = "session"
