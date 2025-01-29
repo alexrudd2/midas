@@ -95,3 +95,4 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = "--cov=midas"
+asyncio_default_fixture_loop_scope = "session"
