@@ -81,19 +81,6 @@ class AsyncioModbusClient:
         registers += r.registers
         return registers
 
-    async def write_coil(self, address: int, value: bool) -> None:
-        """Write a modbus coil."""
-        await self._request('write_coil', address, value)
-
-    async def write_coils(self, address: int, values: list) -> None:
-        """Write modbus coils."""
-        await self._request('write_coils', address, values)
-
-    async def write_register(self, address: int, value: int,
-                             skip_encode: bool = False) -> None:
-        """Write a modbus register."""
-        await self._request('write_register', address, value, skip_encode=skip_encode)
-
     async def write_registers(self, address: int, values: list | tuple,
                               skip_encode: bool = False) -> None:
         """Write modbus registers.
