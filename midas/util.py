@@ -78,10 +78,10 @@ class AsyncioModbusClient:
         """
         registers: list = []
         while count > 124:
-            r = await self._request('read_holding_registers', address, 124)
+            r = await self._request('read_holding_registers', address=address, count=124)
             registers += r.registers
             address, count = address + 124, count - 124
-        r = await self._request('read_holding_registers', address, count)
+        r = await self._request('read_holding_registers', address=address, count=count)
         registers += r.registers
         return registers
 
@@ -93,9 +93,9 @@ class AsyncioModbusClient:
         chunking larger requests.
         """
         while len(values) > 62:
-            await self._request('write_registers', address, values)
+            await self._request('write_registers', address=address, values=values)
             address, values = address + 124, values[62:]
-        await self._request('write_registers', address, values)
+        await self._request('write_registers', address=address, values=values)
 
     @overload
     async def _request(self, method: Literal['read_holding_registers'],
