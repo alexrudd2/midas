@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
 try:
     from pymodbus.client import AsyncModbusTcpClient  # 3.x
 except ImportError:  # 2.4.x - 2.5.x
-    from pymodbus.client.asynchronous.async_io import (
-        ReconnectingAsyncioModbusTcpClient,  # type: ignore
+    from pymodbus.client.asynchronous.async_io import (  # type: ignore
+        ReconnectingAsyncioModbusTcpClient,
     )
 if TYPE_CHECKING:
     try:  # 3.8.x
@@ -24,8 +24,6 @@ if TYPE_CHECKING:
         WriteMultipleRegistersResponse = TypeVar('WriteMultipleRegistersResponse')  # type: ignore
 
 import pymodbus.exceptions
-
-ModbusResponse = TypeVar('ModbusResponse')  # type: ignore
 
 
 class AsyncioModbusClient:
@@ -44,9 +42,9 @@ class AsyncioModbusClient:
         self.pymodbus33plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 3
         self.pymodbus35plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 5
         if self.pymodbus30plus:
-            self.client = AsyncModbusTcpClient(address, timeout=timeout)
+            self.client = AsyncModbusTcpClient(address, timeout=timeout)  # type: ignore
         else:  # 2.x
-            self.client = ReconnectingAsyncioModbusTcpClient()
+            self.client = ReconnectingAsyncioModbusTcpClient()  # type: ignore
         self.lock = asyncio.Lock()
         self.connectTask = asyncio.create_task(self._connect())
 
@@ -102,8 +100,8 @@ class AsyncioModbusClient:
                        *args: Any, **kwargs: Any) -> WriteMultipleRegistersResponse:
         ...
 
-    async def _request(self, method: Literal['read_holding_registers' | 'write_registers'],
-                       *args: Any, **kwargs: Any) -> ModbusResponse:
+    async def _request(self, method: Literal['read_holding_registers', 'write_registers'],
+                       *args: Any, **kwargs: Any) -> Any:
         """Send a request to the device and awaits a response.
 
         This mainly ensures that requests are sent serially, as the Modbus
