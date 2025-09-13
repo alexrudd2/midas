@@ -35,7 +35,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "mypy~=1.17.0",
+  "mypy~=1.18.1",
   "pytest",
   "pytest-cov",
   "pytest-asyncio",
