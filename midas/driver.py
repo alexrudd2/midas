@@ -22,14 +22,14 @@ options = {
     'alarm level': [
         'none',
         'low',
-        'high'
+        'high',
     ],
     'concentration unit': [
         'ppm',
         'ppb',
         '% volume',
         '% LEL',
-        'mA'
+        'mA',
     ],
     'monitor state': [
         'Warmup',
@@ -40,14 +40,14 @@ options = {
         'Alarm or fault simulation',
         'Bump test mode',
         '4-20 mA loop calibration mode',
-        'Non-analog calibration mode'
+        'Non-analog calibration mode',
     ],
     'fault status': [
         'No fault',
         'Maintenance fault',
         'Instrument fault',
-        'Maintenance and instrument faults'
-    ]
+        'Maintenance and instrument faults',
+    ],
 }
 
 

@@ -67,6 +67,7 @@ ignore = [
 select = [
   "B",   # bandit
   "C",   # complexity
+  "COM", # trailing comma rules
   "D",   # docstrings
   "E",   # pycodestyle errors
   "F",   # pyflakes
