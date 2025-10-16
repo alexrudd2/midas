@@ -33,8 +33,8 @@ dependencies = [
   'pymodbus>=3.0.2,<3.10.0; python_version >= "3.10"',
 ]
 
-[project.optional-dependencies]
-test = [
+[dependency-groups]
+dev = [
   "mypy~=1.18.1",
   "pytest",
   "pytest-cov",
