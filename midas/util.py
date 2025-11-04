@@ -7,12 +7,8 @@ from __future__ import annotations
 import asyncio
 from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
 
-try:
-    from pymodbus.client import AsyncModbusTcpClient  # 3.x
-except ImportError:  # 2.4.x - 2.5.x
-    from pymodbus.client.asynchronous.async_io import (  # type: ignore
-        ReconnectingAsyncioModbusTcpClient,
-    )
+from pymodbus.client import AsyncModbusTcpClient
+
 if TYPE_CHECKING:
     try:  # 3.8.x
         from pymodbus.pdu.register_message import (
@@ -41,10 +37,7 @@ class AsyncioModbusClient:
         self.pymodbus32plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 2
         self.pymodbus33plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 3
         self.pymodbus35plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 5
-        if self.pymodbus30plus:
-            self.client = AsyncModbusTcpClient(address, timeout=timeout)  # type: ignore
-        else:  # 2.x
-            self.client = ReconnectingAsyncioModbusTcpClient()  # type: ignore
+        self.client = AsyncModbusTcpClient(address, timeout=timeout)
         self.lock = asyncio.Lock()
         self.connectTask = asyncio.create_task(self._connect())
 
@@ -127,7 +120,5 @@ class AsyncioModbusClient:
         """Close the TCP connection."""
         if self.pymodbus33plus:
             self.client.close()  # 3.3.x
-        elif self.pymodbus30plus:
+        else:
             await self.client.close()  # type: ignore  # 3.0.x - 3.2.x
-        else:  # 2.4.x - 2.5.x
-            self.client.stop()  # type: ignore
