@@ -60,13 +60,13 @@ class AsyncioModbusClient:
             except Exception as e:
                 raise OSError(f"Could not connect to '{self.ip}'.") from e
 
-    async def read_registers(self, address: int, count: int) -> list:
+    async def read_registers(self, address: int, count: int) -> list[int]:
         """Read modbus registers.
 
         The Modbus protocol doesn't allow responses longer than 250 bytes
         (ie. 125 registers), which this function manages by chunking larger requests.
         """
-        registers: list = []
+        registers: list[int] = []
         while count > 124:
             r = await self._request('read_holding_registers', address=address, count=124)
             registers += r.registers
