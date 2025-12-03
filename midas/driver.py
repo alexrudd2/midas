@@ -5,6 +5,7 @@ Distributed under the GNU General Public License v2
 """
 import csv
 import os
+from typing import Any
 
 from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
@@ -14,7 +15,7 @@ from midas.util import AsyncioModbusClient
 root = os.path.normpath(os.path.dirname(__file__))
 with open(os.path.join(root, 'faults.csv')) as in_file:
     reader = csv.reader(in_file)
-    next(reader)
+    _ = next(reader)
     faults = {row[0]: {'description': row[1], 'condition': row[2],
                        'recovery': row[3]} for row in reader}
 
@@ -82,7 +83,7 @@ class GasDetector(AsyncioModbusClient):
 
     def _parse(self, registers: list) -> dict:
         """Parse the response, returning a dictionary."""
-        result: dict = {'ip': self.ip, 'connected': True}
+        result: dict[str, Any] = {'ip': self.ip, 'connected': True}
         bigendian = Endian.BIG if self.pymodbus35plus else Endian.Big  # type:ignore[attr-defined]
         lilendian = Endian.LITTLE if self.pymodbus35plus else Endian.Little  # type:ignore
         decoder = BinaryPayloadDecoder.fromRegisters(registers,

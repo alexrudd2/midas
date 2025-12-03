@@ -53,10 +53,7 @@ class AsyncioModbusClient:
         """Start asynchronous reconnect loop."""
         async with self.lock:
             try:
-                if self.pymodbus30plus:
-                    await asyncio.wait_for(self.client.connect(), timeout=self.timeout)
-                else:  # 2.x
-                    await self.client.start(self.ip)  # type: ignore
+                await asyncio.wait_for(self.client.connect(), timeout=self.timeout)
             except Exception as e:
                 raise OSError(f"Could not connect to '{self.ip}'.") from e
 
