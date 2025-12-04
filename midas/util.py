@@ -32,12 +32,13 @@ class AsyncioModbusClient:
     def __init__(self, address: str, timeout: float = 1) -> None:
         """Set up communication parameters."""
         self.ip = address
+        self.port = 5020 if address == '127.0.0.1' else 502  # pymodbus simulator is 127.0.0.1:5020
         self.timeout = timeout
         self.pymodbus30plus = int(pymodbus.__version__[0]) == 3
         self.pymodbus32plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 2
         self.pymodbus33plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 3
         self.pymodbus35plus = self.pymodbus30plus and int(pymodbus.__version__[2]) >= 5
-        self.client = AsyncModbusTcpClient(address, timeout=timeout)
+        self.client = AsyncModbusTcpClient(address, timeout=timeout, port=self.port)
         self.lock = asyncio.Lock()
         self.connectTask = asyncio.create_task(self._connect())
 
