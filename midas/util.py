@@ -84,12 +84,12 @@ class AsyncioModbusClient:
 
     @overload
     async def _request(self, method: Literal['read_holding_registers'],
-                       *args: Any, **kwargs: Any) -> ReadHoldingRegistersResponse:
+                       address: int, count: int) -> ReadHoldingRegistersResponse:
         ...
 
     @overload
     async def _request(self, method: Literal['write_registers'],
-                       *args: Any, **kwargs: Any) -> WriteMultipleRegistersResponse:
+                       address: int, values: Any) -> WriteMultipleRegistersResponse:
         ...
 
     async def _request(self, method: Literal['read_holding_registers', 'write_registers'],
