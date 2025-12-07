@@ -5,10 +5,8 @@ Distributed under the GNU General Public License v2
 """
 import csv
 import os
+import struct
 from typing import Any
-
-from pymodbus.constants import Endian
-from pymodbus.payload import BinaryPayloadDecoder
 
 from midas.util import AsyncioModbusClient
 
@@ -81,17 +79,17 @@ class GasDetector(AsyncioModbusClient):
         """Cancel the inhibit state."""
         return await self.write_registers(20, (0x055E, 0x3626))
 
+    def _unpack_32bit_float(self, registers: list) -> float:
+        """Unpack a float from two 16-bit registers."""
+        packed = struct.pack('<HH', registers[0], registers[1])
+        return struct.unpack('<f', packed)[0]
+
     def _parse(self, registers: list) -> dict:
         """Parse the response, returning a dictionary."""
         result: dict[str, Any] = {'ip': self.ip, 'connected': True}
-        bigendian = Endian.BIG if self.pymodbus35plus else Endian.Big  # type:ignore[attr-defined]
-        lilendian = Endian.LITTLE if self.pymodbus35plus else Endian.Little  # type:ignore
-        decoder = BinaryPayloadDecoder.fromRegisters(registers,
-                                                     byteorder=bigendian,
-                                                     wordorder=lilendian)
         # Register 40001 is a collection of alarm status signals
-        b = [decoder.decode_bits(), decoder.decode_bits()]
-        reg_40001 = b[1] + b[0]
+        # Extract all 16 bits (LSB first)
+        reg_40001 = [(registers[0] >> i) & 1 for i in range(16)]
         # Bits 0-3 map to the monitor state
         monitor_integer = sum(1 << i for i, b in enumerate(reg_40001[:4]) if b)
         result['state'] = options['monitor state'][monitor_integer]
@@ -106,35 +104,31 @@ class GasDetector(AsyncioModbusClient):
         # Bit 12 tells if relays are under modbus control. Skipping.
         # Remaining bits are empty. Skipping.
         # Register 40002 has a gas ID and a sensor cartridge ID. Skipping.
-        decoder._pointer += 2
         # Registers 40003-40004 are the gas concentration as a float
-        result['concentration'] = decoder.decode_32bit_float()
+        result['concentration'] = self._unpack_32bit_float(registers[2:4])
         # Register 40005 is the concentration as an int. Skipping.
-        decoder._pointer += 2
         # Register 40006 is the number of the most important fault.
-        fault_number = decoder.decode_16bit_uint()
+        fault_number = registers[5]
         if fault_number != 0:
             code = ('m' if fault_number < 30 else 'F') + str(fault_number)
             result['fault']['code'] = code
             result['fault'].update(faults[code])
         # Register 40007 holds the concentration unit in the second byte
         # Instead of being an int, it's the position of the up bit
-        unit_bit = decoder.decode_bits().index(True)
+        reg_40007 = [(registers[6] >> i) & 1 for i in range(8, 16)]  # only high byte
+        unit_bit = reg_40007.index(1)
         result['units'] = options['concentration unit'][unit_bit]
-        decoder._pointer += 1
         # Register 40008 holds the sensor temperature in Celsius
-        result['temperature'] = decoder.decode_16bit_int()
+        result['temperature'] = registers[7]
         # Register 40009 holds number of hours remaining in cell life
-        result['life'] = decoder.decode_16bit_uint() / 24.0
+        result['life'] = registers[8] / 24.0
         # Register 40010 holds the number of heartbeats (16 LSB). Skipping.
-        decoder._pointer += 2
         # Register 40011 is the sample flow rate in cc / min
-        result['flow'] = decoder.decode_16bit_uint()
+        result['flow'] = registers[10]
         # Register 40012 is blank. Skipping.
-        decoder._pointer += 2
         # Registers 40013-40016 are the alarm concentration thresholds
-        result['low-alarm threshold'] = round(decoder.decode_32bit_float(), 6)
-        result['high-alarm threshold'] = round(decoder.decode_32bit_float(), 6)
+        result['low-alarm threshold'] = round(self._unpack_32bit_float(registers[12:14]), 6)
+        result['high-alarm threshold'] = round(self._unpack_32bit_float(registers[14:16]), 6)
         # Despite what the manual says, thresholds are always reported in ppm.
         # Let's fix that to match the concentration units.
         if result['units'] == 'ppb':
