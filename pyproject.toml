@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "midas"
-version = "0.7.0"
+version = "0.8.0"
 description="Python driver for Honeywell Midas gas detectors."
 authors = [
   {name = "Pat Fuller", email = "patrickfuller@gmail.com" },
