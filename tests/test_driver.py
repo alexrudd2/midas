@@ -27,6 +27,8 @@ async def _sim():
             """Look for user commands to the user commands registers."""
             if address == 21 and values == [0x025E, 0x3626]:  # inhibit alarms
                 super().setValues(1, 2)
+            elif address == 21 and values == [0x035E, 0x3626]:  # inhibit alarms and faults
+                super().setValues(1, 3)
             elif address == 21 and values == [0x055E, 0x3626]:  # uninhibit
                 super().setValues(1, 1)
             else:
@@ -118,6 +120,11 @@ async def test_inhibit_roundtrip(midas_driver, expected_data):
     await midas_driver.inhibit_alarms()
     state = await midas_driver.get()
     assert state == {**expected_data, "state": "Monitoring with alarms inhibited"}
+    await midas_driver.remove_inhibit()
+
+    await midas_driver.inhibit_alarms_and_faults()
+    state = await midas_driver.get()
+    assert state == {**expected_data, "state": "Monitoring with alarms and faults inhibited"}
     await midas_driver.remove_inhibit()
     state = await midas_driver.get()
     assert state == expected_data
