@@ -12,8 +12,8 @@ from pymodbus.client import AsyncModbusTcpClient
 if TYPE_CHECKING:
     try:  # 3.8.x
         from pymodbus.pdu.register_message import (
-            ReadHoldingRegistersResponse,
-            WriteMultipleRegistersResponse,
+            ReadHoldingRegistersResponse,  # type: ignore[reportRedeclaration]
+            WriteMultipleRegistersResponse,  # type: ignore[reportRedeclaration]
         )
     except ImportError:  # <= 3.7.x
         ReadHoldingRegistersResponse: TypeAlias = Any  # type: ignore[no-redef]
