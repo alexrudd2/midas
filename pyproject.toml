@@ -33,11 +33,11 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "mypy~=1.19.0",
   "pytest>=9.0",
   "pytest-cov",
   "pytest-asyncio",
   "ruff~=0.14.7",
+  "zuban>=0.3.0",
 ]
 
 [project.scripts]
