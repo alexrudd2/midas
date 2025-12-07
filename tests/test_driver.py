@@ -9,8 +9,8 @@ from midas import GasDetector, command_line
 try:
     from pymodbus.server import ModbusTcpServer  # 3.0.x
 except ImportError:
-    from pymodbus.server.async_io import (
-        ModbusTcpServer,  # type: ignore[import-not-found, no-redef]
+    from pymodbus.server.async_io import (  # type: ignore[import-not-found, no-redef]
+        ModbusTcpServer,
     )
 
 @pytest.fixture(scope='session', autouse=True)
