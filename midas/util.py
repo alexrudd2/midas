@@ -5,7 +5,7 @@ Distributed under the GNU General Public License v2
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Literal, TypeVar, overload
+from typing import TYPE_CHECKING, Any, Literal, TypeAlias, overload
 
 from pymodbus.client import AsyncModbusTcpClient
 
@@ -16,8 +16,8 @@ if TYPE_CHECKING:
             WriteMultipleRegistersResponse,
         )
     except ImportError:  # <= 3.7.x
-        ReadHoldingRegistersResponse = TypeVar('ReadHoldingRegistersResponse')  # type: ignore
-        WriteMultipleRegistersResponse = TypeVar('WriteMultipleRegistersResponse')  # type: ignore
+        ReadHoldingRegistersResponse: TypeAlias = Any  # type: ignore[no-redef]
+        WriteMultipleRegistersResponse: TypeAlias = Any  # type: ignore[no-redef]
 
 import pymodbus.exceptions
 
