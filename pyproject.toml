@@ -108,3 +108,4 @@ venvPath = "."
 venv = ".venv"
 typeCheckingMode = "standard"
 enableTypeIgnoreComments = true
+reportMissingSuperCall = false

@@ -49,7 +49,7 @@ class GasDetector(realGasDetector):
 
         return handler
 
-    async def get(self) -> dict:
+    async def get(self) -> dict[str, Any]:
         """Return a mock state with the same object structure."""
         await asyncio.sleep(random() * 0.1)
         return self.state

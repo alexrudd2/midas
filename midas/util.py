@@ -55,7 +55,7 @@ class AsyncioModbusClient:
         """Start asynchronous reconnect loop."""
         async with self.lock:
             try:
-                await asyncio.wait_for(self.client.connect(), timeout=self.timeout)
+                _ = await asyncio.wait_for(self.client.connect(), timeout=self.timeout)
             except Exception as e:
                 raise OSError(f"Could not connect to '{self.ip}'.") from e
 
@@ -74,13 +74,13 @@ class AsyncioModbusClient:
         registers += r.registers
         return registers
 
-    async def write_registers(self, address: int, values: list | tuple) -> None:
+    async def write_registers(self, address: int, values: list[int]) -> None:
         """Write modbus registers.
 
         The Modbus protocol doesn't allow requests longer than 250 bytes
         (ie. 125 registers), but a single Midas doesn't have that many.
         """
-        await self._request('write_registers', address=address, values=values)
+        _ = await self._request('write_registers', address=address, values=values)
 
     @overload
     async def _request(self, method: Literal['read_holding_registers'],
@@ -89,7 +89,7 @@ class AsyncioModbusClient:
 
     @overload
     async def _request(self, method: Literal['write_registers'],
-                       address: int, values: Any) -> WriteMultipleRegistersResponse:
+                       address: int, values: list[int]) -> WriteMultipleRegistersResponse:
         ...
 
     async def _request(self, method: Literal['read_holding_registers', 'write_registers'],

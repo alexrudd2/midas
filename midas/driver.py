@@ -59,32 +59,32 @@ class GasDetector(AsyncioModbusClient):
     you don't have to.
     """
 
-    async def get(self) -> dict:
+    async def get(self) -> dict[str, Any]:
         """Get current state from the Midas gas detector."""
         return self._parse(await self.read_registers(0, 16))
 
     async def reset_alarms_and_faults(self) -> None:
         """Reset all alarms and faults."""
-        return await self.write_registers(20, (0x015E, 0x3626))
+        return await self.write_registers(20, [0x015E, 0x3626])
 
     async def inhibit_alarms(self) -> None:
         """Inhibit alarms from triggering."""
-        return await self.write_registers(20, (0x025E, 0x3626))
+        return await self.write_registers(20, [0x025E, 0x3626])
 
     async def inhibit_alarms_and_faults(self) -> None:
         """Inhibit alarms and faults from triggering."""
-        return await self.write_registers(20, (0x035E, 0x3626))
+        return await self.write_registers(20, [0x035E, 0x3626])
 
     async def remove_inhibit(self) -> None:
         """Cancel the inhibit state."""
-        return await self.write_registers(20, (0x055E, 0x3626))
+        return await self.write_registers(20, [0x055E, 0x3626])
 
-    def _unpack_32bit_float(self, registers: list) -> float:
+    def _unpack_32bit_float(self, registers: list[int]) -> float:
         """Unpack a float from two 16-bit registers."""
         packed = struct.pack('<HH', registers[0], registers[1])
         return struct.unpack('<f', packed)[0]
 
-    def _parse(self, registers: list) -> dict:
+    def _parse(self, registers: list[int]) -> dict[str, Any]:
         """Parse the response, returning a dictionary."""
         result: dict[str, Any] = {'ip': self.ip, 'connected': True}
         # Register 40001 is a collection of alarm status signals
