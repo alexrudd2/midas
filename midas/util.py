@@ -5,22 +5,17 @@ Distributed under the GNU General Public License v2
 from __future__ import annotations
 
 import asyncio
-from typing import TYPE_CHECKING, Any, Literal, TypeAlias, overload
-
-from pymodbus.client import AsyncModbusTcpClient
-
-if TYPE_CHECKING:
-    try:  # 3.8.x
-        from pymodbus.pdu.register_message import (  # type: ignore[import-not-found]
-            ReadHoldingRegistersResponse,  # type: ignore[reportRedeclaration]
-            WriteMultipleRegistersResponse,  # type: ignore[reportRedeclaration]
-        )
-    except ImportError:  # <= 3.7.x
-        ReadHoldingRegistersResponse: TypeAlias = Any  # type: ignore[no-redef]
-        WriteMultipleRegistersResponse: TypeAlias = Any  # type: ignore[no-redef]
+from typing import Any, Literal, Protocol, overload
 
 import pymodbus.exceptions
+from pymodbus.client import AsyncModbusTcpClient
 
+
+class ReadHoldingRegistersResponse(Protocol):  # noqa: D101
+    registers: list[int]
+
+class WriteMultipleRegistersResponse(Protocol):  # noqa: D101
+    count: int
 
 class AsyncioModbusClient:
     """A generic asyncio client.
