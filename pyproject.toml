@@ -89,7 +89,7 @@ ignore-variadic-names = true
 
 [tool.mypy]
 check_untyped_defs = true
-allow_untyped_defs = false
+disallow_untyped_defs = true
 
 [[tool.mypy.overrides]]
 module = ["pymodbus.*"]
@@ -97,7 +97,7 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["tests.*"]
-allow_untyped_defs = true
+disallow_untyped_defs = false
 
 [tool.pytest]
 addopts = ["--cov"]
