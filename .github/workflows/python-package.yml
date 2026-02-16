@@ -38,24 +38,25 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
+          activate-environment: true
       - name: Install dependencies
         run: |
           uv sync --all-extras
           uv add pymodbus==${{ matrix.pymodbus-version }}
       - name: Lint with ruff
         run: |
-          uv run ruff check .
+          ruff check .
       - name: Check types with zuban
         run: |
           if [ ${{ matrix.pymodbus-version }} == "3.0.2" ] || \
              [ ${{ matrix.pymodbus-version }} == "3.1.3" ]; then
-            uv run zuban mypy midas --ignore-missing-imports
+            zuban mypy midas --ignore-missing-imports
           else
-            uv run zuban mypy midas
+            zuban mypy midas
           fi
       - name: Pytest
         run: |
-          uv run pytest
+          pytest
 
 permissions:
   contents: read
