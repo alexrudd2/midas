@@ -62,7 +62,7 @@ def create_context():  # noqa: C901
             ),
             action=handle_action,
         )
-    except ImportError: # 3.0 - 3.12
+    except (ImportError, TypeError): # 3.0 - 3.12
         from pymodbus.datastore import ModbusSequentialDataBlock, ModbusServerContext
 
         class InterceptingDataBlock(ModbusSequentialDataBlock):
