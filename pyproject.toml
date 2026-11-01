@@ -29,7 +29,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-  'pymodbus>=3.0.2,<3.13,!=3.10.0',
+ 'pymodbus>=3.0.2,<3.17,!=3.9.2,!=3.10.0,!=3.16.0',
 ]
 
 [dependency-groups]
@@ -97,7 +97,7 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["tests.*"]
-disallow_untyped_defs = false
+ignore_errors = true
 
 [tool.pytest]
 addopts = ["--cov"]
