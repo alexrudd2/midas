@@ -39,8 +39,8 @@ async def _sim():
     except ImportError:
         from pymodbus.datastore import ModbusSlaveContext as ModbusDeviceContext  # type: ignore
     store = ModbusDeviceContext(
-        di=ModbusSequentialDataBlock(0, [0] * 65536),  # Discrete Inputs
-        co=ModbusSequentialDataBlock(0, [0] * 65536),  # Coils
+        di=ModbusSequentialDataBlock(1, [0] * 65536),  # Discrete Inputs
+        co=ModbusSequentialDataBlock(1, [0] * 65536),  # Coils
         hr=InterceptingDataBlock(1, [
             0b0000000000000001,  # status bits - monitoring, no faults
             0,                   # 40002 - gas id / cartridge id (skipped)
@@ -63,7 +63,7 @@ async def _sim():
             0, 0,                # 40019-20 - concentration high scale (skipped)
             0, 0,                # 40021-22 - user command registers
         ]),  # Holding Registers
-        ir=ModbusSequentialDataBlock(0, [0] * 65536),  # Input Registers
+        ir=ModbusSequentialDataBlock(1, [0] * 65536),  # Input Registers
     )
     context = ModbusServerContext(store, single=True)
     server = ModbusTcpServer(context=context, address=("127.0.0.1", 5020))
